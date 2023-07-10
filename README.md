@@ -1,5 +1,5 @@
 # EasyEnum
-[![coverage](https://img.shields.io/badge/coverage-100%25-green)]()
+[![coverage](https://img.shields.io/badge/coverage-100%25-red)]()
 [![GitHub](https://img.shields.io/github/license/luo-zhan/EasyEnum)](http://opensource.org/licenses/apache-2-0)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/luo-zhan/EasyEnum)]()
 [![GitHub last commit](https://img.shields.io/github/last-commit/luo-zhan/EasyEnum?label=Last%20commit)]()
