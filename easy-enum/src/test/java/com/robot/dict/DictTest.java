@@ -67,17 +67,13 @@ class DictTest {
         List<DictBean> items = Dict.getItemsExclude(Sex.UNKNOWN);
         System.out.println(JSON.toJSONString(items));
         assertEquals(2, items.size());
-
     }
 
     @Test
     void parse() {
-
         // 转换为字典集合
-        List<DictBean> dictBeans = Dict.parse(teachers, Teacher::getId, Teacher::getName);
+        List<DictBean> dictBeans = Dict.parseList(teachers, Teacher::getId, Teacher::getName);
         System.out.println(JSON.toJSONString(dictBeans));
         assertEquals(3, dictBeans.size());
-
-
     }
 }

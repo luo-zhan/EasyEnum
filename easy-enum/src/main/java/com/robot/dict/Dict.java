@@ -1,6 +1,5 @@
 package com.robot.dict;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 
 /**
  * 字典接口
@@ -18,8 +16,7 @@ import java.util.stream.Stream;
  *
  * @author R
  */
-public interface Dict<T extends Serializable> {
-
+public interface Dict<T> {
 
     /**
      * 初始化
@@ -36,8 +33,9 @@ public interface Dict<T extends Serializable> {
      *
      * @return 字典编码
      */
+    @SuppressWarnings("unchecked")
     default T getCode() {
-        return DictPool.getDict(this).getCode();
+        return (T) DictPool.getDict(this).getCode();
     }
 
     /**
@@ -55,9 +53,9 @@ public interface Dict<T extends Serializable> {
      *
      * @param clazz 枚举class
      * @param code  code
-     * @return text
+     * @return text，找不到返回null
      */
-    static <T extends Serializable> String getTextByCode(Class<? extends Dict<T>> clazz, T code) {
+    static <T> String getTextByCode(Class<? extends Dict<T>> clazz, T code) {
         return Stream.of(clazz.getEnumConstants())
                 .filter((Dict<T> e) -> e.getCode().equals(code))
                 .map(Dict::getText)
@@ -69,9 +67,9 @@ public interface Dict<T extends Serializable> {
      *
      * @param clazz 枚举class
      * @param text  text
-     * @return code
+     * @return code，找不到返回null
      */
-    static <T extends Serializable> T getCodeByText(Class<? extends Dict<T>> clazz, String text) {
+    static <T> T getCodeByText(Class<? extends Dict<T>> clazz, String text) {
         return Stream.of(clazz.getEnumConstants())
                 .filter((Dict<T> e) -> e.getText().equals(text))
                 .map(Dict::getCode)
@@ -84,14 +82,12 @@ public interface Dict<T extends Serializable> {
      * @param clazz 枚举class
      * @param code  code
      * @param <T>   字典code类型
-     * @param <R>   枚举类型
-     * @return 字典枚举实例
+     * @param <K>   枚举类型
+     * @return 字典枚举实例，找不到返回null
      */
-    @SuppressWarnings("unchecked")
-    static <T extends Serializable, R extends Dict<T>> R getByCode(Class<? extends Dict<T>> clazz, T code) {
+    static <T, K extends Dict<T>> K getByCode(Class<K> clazz, T code) {
         return Stream.of(clazz.getEnumConstants())
-                .filter((Dict<T> e) -> (e.getCode().equals(code) || e.getCode().toString().equals(code.toString())))
-                .map(v -> (R) v)
+                .filter(e -> e.getCode().equals(code))
                 .findAny()
                 .orElse(null);
     }
@@ -103,7 +99,7 @@ public interface Dict<T extends Serializable> {
      * @param clazz 字典枚举类
      * @return List
      */
-    static <T extends Serializable> List<DictBean> getAll(Class<? extends Dict<T>> clazz) {
+    static <T> List<DictBean> getAll(Class<? extends Dict<T>> clazz) {
         Map<String, Field> fieldCache = Arrays.stream(clazz.getDeclaredFields()).
                 filter(Field::isEnumConstant).
                 collect(Collectors.toMap(Field::getName, Function.identity()));
@@ -114,6 +110,10 @@ public interface Dict<T extends Serializable> {
                 .collect(Collectors.toList());
     }
 
+    static <T> List<DictBean> getAll1(Class<? extends Dict<T>> clazz) {
+        return DictPool.getAll(clazz);
+    }
+
     /**
      * 获取给定的字典枚举项（常用下拉框数据请求）
      *
@@ -121,27 +121,25 @@ public interface Dict<T extends Serializable> {
      * @return List
      */
     @SafeVarargs
-    static <T extends Serializable, E extends Dict<T>> List<DictBean> getItems(E... enums) {
+    static <E extends Dict<?>> List<DictBean> getItems(E... enums) {
         return Stream.of(enums)
-                .map(v -> new DictBean(v.getCode(), v.getText()))
+                .map(DictPool::getDict)
                 .collect(Collectors.toList());
     }
 
     /**
      * 获取所有字典枚举项，除开指定的枚举
      *
-     * @param exclude 指定排除的枚举
+     * @param excludeEnums 指定排除的枚举
      * @return List
      */
-    @SafeVarargs
     @SuppressWarnings("unchecked")
-    static <T extends Serializable, E extends Dict<T>> List<DictBean> getItemsExclude(E... exclude) {
-        Class<Dict<T>> clazz = (Class<Dict<T>>) exclude.getClass().getComponentType();
-        Dict<T>[] allEnum = clazz.getEnumConstants();
-        List<Dict<T>> excludeList = Arrays.asList(exclude);
-        return Stream.of(allEnum)
-                .filter(e -> !excludeList.contains(e))
-                .map(v -> new DictBean(v.getCode(), v.getText()))
+    static <E extends Dict<?>> List<DictBean> getItemsExclude(E... excludeEnums) {
+        Class<? extends Dict<?>> enmuClass = (Class<? extends Dict<?>>) excludeEnums.getClass().getComponentType();
+        List<DictBean> allDict = DictPool.getAll(enmuClass);
+        List<?> excluceCodeList = Stream.of(excludeEnums).map(Dict::getCode).collect(Collectors.toList());
+        return allDict.stream()
+                .filter(dictBean -> !excluceCodeList.contains(dictBean.getCode()))
                 .collect(Collectors.toList());
     }
 
@@ -155,10 +153,8 @@ public interface Dict<T extends Serializable> {
      * @param textGenerator 字典文本生成函数
      * @return 字典集合
      */
-    static <T, K extends Serializable> List<DictBean> parse(List<T> list, Function<T, K> codeGenerator, Function<T, String> textGenerator) {
+    static <T, K> List<DictBean> parseList(List<T> list, Function<T, K> codeGenerator, Function<T, String> textGenerator) {
         return list.stream().map(v -> new DictBean(codeGenerator.apply(v), textGenerator.apply(v))).collect(Collectors.toList());
     }
-
-
 
 }
