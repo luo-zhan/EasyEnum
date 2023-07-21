@@ -6,7 +6,9 @@ package com.robot.dict;
  * @author R
  */
 public class DictBean implements Dict<Object> {
+
     private final Object code;
+
     private final String text;
 
     public DictBean(Object code, String text) {
