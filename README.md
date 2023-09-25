@@ -7,7 +7,6 @@
 只需体验3分钟，带你见识全新的枚举开发体验！
 
 ## 功能
-
 - [x] 简化枚举类定义（省略属性定义&get方法，提供大量实用的枚举转换工具）
 - [x] Spring开发支持（支持实体类中使用枚举属性、支持Get类型接口入参直接使用枚举、Feign调用支持枚举传输）
 - [ ] MyBatis开发支持（Entity中可直接用枚举属性在sql中自动转换成数值、MyBatisPlus中Wrapper支持直接使用枚举条件）
@@ -90,7 +89,6 @@ String text = Sex.MALE.getText(); // "男"
 > Dict的含义即为字典，拥有编码和文本两个固定属性，而在业务开发中定义的枚举大都是就是字典，所以抽象成接口，省略枚举类中重复代码。
 
 ### 2.使用枚举方法
-
 Dict接口除了优化枚举申明，还提供了大量实用的api：
 ```java
 // 1、通过code获取text
@@ -112,65 +110,58 @@ List<DictBean> items = Dict.getItemsExclude(Sex.UNKNOWN); // [{code:1,text:"男"
 有了这些工具方法，枚举类中再也不用写重复的方法代码了。
 
 ### 3.Spring开发支持
-
 在以往的接口开发中，是不是当DTO中有枚举含义的字段时，都是用int类型来处理，然后代码中写逻辑时需要这样：
-
 ```java
 // 实际上这段代码还会告警
-if(student.getSex()==SexEnum.MALE.getCode()){
-        ...
-        }
+if(student.getSex() == SexEnum.MALE.getCode()){
+    ...
+}
 ```
-
 又比如当遇到switch-case时，代码也会相当不优雅：
-
 ```java
 // 写法1，直接用魔法值
 switch(studentDTO.getSex()){
-        case 1:System.out.print("男");break;
-        case 2:System.out.print("女");break;
-        }
+    case 1: System.out.print("男");break;
+    case 2: System.out.print("女");break;
+}
 // 写法2，先转换成枚举类
-        SexEnum sex=SexEnum.getByCode(studentDTO.getSex());
-        switch(sex){
-        case MALE:System.out.print("男");break;
-        case FEMAL:System.out.print("女");break;
-        }
+SexEnum sex = SexEnum.getByCode(studentDTO.getSex());
+switch(sex){
+    case MALE: System.out.print("男");break;
+    case FEMAL: System.out.print("女");break;
+}
 ```
-
 那为什么不直接在Bean中使用枚举类型的属性呢？
-
 ```java
 public class StudentDTO {
     private int id;
     private String name;
     private SexEnum sex; // 使用枚举类型
-
+    
 }
 
 // 代码中：
 switch(studentDTO.getSex()){
-        case MALE:System.out.print("男");break;
-        case FEMAL:System.out.print("女");break;
-        }
+    case MALE:  System.out.print("男");break;
+    case FEMAL: System.out.print("女");break;
+}
 ```
-
 > 这里DTO、VO都支持使用枚举属性，主要是源码中对枚举的json序列化和反序列化做了支持
 ## 依赖
    ```xml
     <!-- 核心模块 -->
-<dependency>
+    <dependency>
        <groupId>io.github.luo-zhan</groupId>
        <artifactId>easy-enum</artifactId>
        <version>1.1.0-RELEASE</version>
-</dependency>
+    </dependency>
 
-        <!-- spring开发支持，包含核心模块 -->
-<dependency>
-<groupId>io.github.luo-zhan</groupId>
-<artifactId>easy-enum-for-spring</artifactId>
-<version>1.1.0-RELEASE</version>
-</dependency>
+    <!-- spring开发支持，包含核心模块 -->
+    <dependency>
+        <groupId>io.github.luo-zhan</groupId>
+        <artifactId>easy-enum-for-spring</artifactId>
+        <version>1.1.0-RELEASE</version>
+    </dependency>
    ```
 
 ## 交流
