@@ -117,7 +117,7 @@ List<DictBean> items = Dict.getItemsExclude(Sex.UNKNOWN); // [{code:1,text:"男"
    <dependency>
        <groupId>io.github.luo-zhan</groupId>
        <artifactId>easy-enum</artifactId>
-       <version>1.0.0-RELEASE</version>
+       <version>1.1.0-RELEASE</version>
    </dependency>
    ```
 

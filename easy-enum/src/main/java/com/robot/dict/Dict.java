@@ -87,7 +87,7 @@ public interface Dict<T> {
      */
     static <T, K extends Dict<T>> K getByCode(Class<K> clazz, T code) {
         return Stream.of(clazz.getEnumConstants())
-                .filter(e -> e.getCode().equals(code))
+                .filter(e -> e.getCode().toString().equals(String.valueOf(code)))
                 .findAny()
                 .orElse(null);
     }
@@ -110,9 +110,6 @@ public interface Dict<T> {
                 .collect(Collectors.toList());
     }
 
-    static <T> List<DictBean> getAll1(Class<? extends Dict<T>> clazz) {
-        return DictPool.getAll(clazz);
-    }
 
     /**
      * 获取给定的字典枚举项（常用下拉框数据请求）
