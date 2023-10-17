@@ -1,1 +1,4 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.robot.dict.spring.DictJacksonConfiguration,com.robot.dict.spring.DictSpringConvertConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.robot.dict.spring.DictJacksonConfiguration,\
+com.robot.dict.spring.DictSpringConvertConfiguration,\
+com.robot.dict.spring.DictMybatisConfiguration

@@ -8,8 +8,8 @@
 
 ## 功能
 - [x] 简化枚举类定义（省略属性定义&get方法，提供大量实用的枚举转换工具）
-- [x] Spring开发支持（支持实体类中使用枚举属性、支持Get类型接口入参直接使用枚举、Feign调用支持枚举传输）
-- [ ] MyBatis开发支持（Entity中可直接用枚举属性在sql中自动转换成数值、MyBatisPlus中Wrapper支持直接使用枚举条件）
+- [x] Spring开发支持（支持Post请求DTO/VO中使用枚举属性、支持Get请求方法出入参使用枚举、Feign调用支持枚举传输）
+- [x] MyBatis开发支持（Entity中可直接用枚举属性在sql中自动转换成数值、MyBatisPlus中Wrapper支持直接使用枚举条件）
 - [ ] Dubbo调用中使用枚举传输
 
 ## 快速上手
@@ -153,14 +153,14 @@ switch(studentDTO.getSex()){
     <dependency>
        <groupId>io.github.luo-zhan</groupId>
        <artifactId>easy-enum</artifactId>
-       <version>1.1.0-RELEASE</version>
+       <version>1.2.0-RELEASE</version>
     </dependency>
 
-    <!-- spring开发支持，包含核心模块 -->
+    <!-- spring开发支持（Json、Mybatis、Converter），引入这个不需要再引入上面核心模块 -->
     <dependency>
         <groupId>io.github.luo-zhan</groupId>
         <artifactId>easy-enum-for-spring</artifactId>
-        <version>1.1.0-RELEASE</version>
+        <version>1.2.0-RELEASE</version>
     </dependency>
    ```
 

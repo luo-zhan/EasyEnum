@@ -5,7 +5,7 @@
 
     <groupId>io.github.luo-zhan</groupId>
     <artifactId>EasyEnum</artifactId>
-    <version>1.1.0-RELEASE</version>
+    <version>1.2.0-RELEASE</version>
     <name>EasyEnum</name>
     <modules>
         <module>easy-enum</module>
