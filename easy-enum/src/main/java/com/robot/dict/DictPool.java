@@ -11,9 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author R
  */
 class DictPool {
-    private DictPool() {
-    }
-
     /**
      * 存储所有字典
      */
@@ -21,17 +18,24 @@ class DictPool {
     /**
      * 枚举类和对应的字典集合
      */
-    private static final Map<Class<?>, List<DictBean>> DICT_CLASS_MAP = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<DictBean>> DICT_CLASS_ITEMS_MAP = new ConcurrentHashMap<>();
 
     /**
      * 放入字典和对应的code、text
      * 此步骤线程安全
      */
     static <T> void putDict(Dict<T> dict, T code, String text) {
-        DictBean dictBean = new DictBean(code, text);
+        Class<?> dictClass = dict.getClass();
+        boolean isEnumDeprecated = false;
+        try {
+            isEnumDeprecated = dictClass.isEnum() && dictClass.getDeclaredField(((Enum<?>) dict).name()).isAnnotationPresent(Deprecated.class);
+        } catch (NoSuchFieldException ignore) {
+            // impossible
+        }
+        DictBean dictBean = new DictBean(code, text, isEnumDeprecated);
         DICT_MAP.put(dict, dictBean);
         // 同一个枚举类初始化一定是单线程的，所以使用ArrayList即可
-        DICT_CLASS_MAP.computeIfAbsent(dict.getClass(), k -> new ArrayList<>()).add(dictBean);
+        DICT_CLASS_ITEMS_MAP.computeIfAbsent(dictClass, k -> new ArrayList<>()).add(dictBean);
     }
 
     /**
@@ -47,7 +51,9 @@ class DictPool {
     static List<DictBean> getAll(Class<? extends Dict<?>> clazz) {
         // 触发实例化枚举对象，避免并发问题导致未实例化拿不到数据，这比任何加锁方式都要简单快速
         clazz.getEnumConstants();
-        return DICT_CLASS_MAP.get(clazz);
+        return DICT_CLASS_ITEMS_MAP.get(clazz);
     }
 
+    private DictPool() {
+    }
 }

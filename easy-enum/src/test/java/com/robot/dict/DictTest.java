@@ -50,6 +50,7 @@ class DictTest {
     @Test
     void getAll() {
         List<DictBean> all = Dict.getAll(Sex.class);
+        System.out.println(JSON.toJSONString(all));
         assertEquals(3, all.size());
     }
 
@@ -62,7 +63,7 @@ class DictTest {
 
     @Test
     void getItemsExclude() {
-        List<DictBean> items = Dict.getItemsExclude(Sex.UNKNOWN);
+        List<DictBean> items = Dict.getItemsExclude(Sex.MALE);
         System.out.println(JSON.toJSONString(items));
         assertEquals(2, items.size());
     }

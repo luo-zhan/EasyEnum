@@ -1,9 +1,6 @@
 package com.robot.dict;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -71,7 +68,7 @@ public interface Dict<T> {
      */
     static <T> T getCodeByText(Class<? extends Dict<T>> clazz, String text) {
         return Stream.of(clazz.getEnumConstants())
-                .filter((Dict<T> e) -> e.getText().equals(text))
+                .filter(e -> e.getText().equals(text))
                 .map(Dict::getCode)
                 .findAny().orElse(null);
     }
@@ -88,26 +85,17 @@ public interface Dict<T> {
     static <T, K extends Dict<T>> K getByCode(Class<K> clazz, T code) {
         return Stream.of(clazz.getEnumConstants())
                 .filter(e -> e.getCode().toString().equals(String.valueOf(code)))
-                .findAny()
-                .orElse(null);
+                .findAny().orElse(null);
     }
 
     /**
      * 获取所有字典枚举项（常用下拉框数据请求）
-     * 枚举值上标记@Deprecated的不会返回
      *
      * @param clazz 字典枚举类
      * @return List
      */
     static <T> List<DictBean> getAll(Class<? extends Dict<T>> clazz) {
-        Map<String, Field> fieldCache = Arrays.stream(clazz.getDeclaredFields()).
-                filter(Field::isEnumConstant).
-                collect(Collectors.toMap(Field::getName, Function.identity()));
-        Dict<T>[] allEnum = clazz.getEnumConstants();
-        return Stream.of(allEnum)
-                .filter(e -> !fieldCache.get(((Enum<?>) e).name()).isAnnotationPresent(Deprecated.class))
-                .map(v -> new DictBean(v.getCode(), v.getText()))
-                .collect(Collectors.toList());
+        return DictPool.getAll(clazz);
     }
 
 

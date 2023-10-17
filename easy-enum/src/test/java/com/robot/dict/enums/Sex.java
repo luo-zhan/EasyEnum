@@ -8,6 +8,7 @@ import com.robot.dict.Dict;
 public enum Sex implements Dict<Integer> {
     MALE(1, "男"),
     FEMALE(2, "女"),
+    @Deprecated
     UNKNOWN(3, "未知");
 
     Sex(Integer code, String text) {

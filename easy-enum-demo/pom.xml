@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.luo-zhan</groupId>
         <artifactId>EasyEnum</artifactId>
-        <version>1.1.0-RELEASE</version>
+        <version>1.2.0-RELEASE</version>
     </parent>
 
     <artifactId>easy-enum-demo</artifactId>
@@ -20,23 +20,19 @@
         <dependency>
             <groupId>io.github.luo-zhan</groupId>
             <artifactId>easy-enum</artifactId>
-            <version>1.1.0-RELEASE</version>
+            <version>1.2.0-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>io.github.luo-zhan</groupId>
             <artifactId>easy-enum-for-spring</artifactId>
-            <version>1.1.0-RELEASE</version>
+            <version>1.2.0-RELEASE</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.26</version>
-            <scope>compile</scope>
         </dependency>
-
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
