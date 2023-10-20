@@ -4,7 +4,7 @@
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/luo-zhan/EasyEnum)]()
 [![GitHub last commit](https://img.shields.io/github/last-commit/luo-zhan/EasyEnum?label=Last%20commit)]()
 
-只需体验3分钟，带你见识全新的枚举开发体验！
+重铸枚举荣光！！
 
 ## 功能
 - [x] 简化枚举类定义（省略属性定义&get方法，提供大量实用的枚举转换工具）
@@ -18,54 +18,8 @@
 ### 1. 创建枚举类
 
 回想一下，以前我们每次创建枚举类都要定义属性、写get方法和一堆工具方法，代码非常重复。
-#### Before：
-```java
-public enum Sex {
-    MALE(1, "男"),
-    FEMALE(2, "女"),
-    UNKNOWN(3, "未知");
-    // 1、属性定义
-    private final Integer code;
-    private final String text;
-    // 2、构造方法
-    Sex(Integer code, String text) {
-        this.code = code;
-        this.text = text;
-    }
-    // 3、get方法
-    public Integer getCode() {
-        return code;
-    }
-    public String getText() {
-        return text;
-    }
-    // 4、工具方法
-    /**
-     * 根据code获取text
-     */
-    public String getTextByCode(Integer code){
-        return Stream.of(Sex.class.getEnumConstants())
-                .filter((e) -> (e.getCode().equals(code)))
-                .map(Dict::getText)
-                .findAny()
-                .orElse(null);
-    }
 
-    /**
-     * 根据code获取枚举
-     */
-    public Sex getFromCode(Integer code){
-        return Stream.of(Sex.class.getEnumConstants())
-                .filter((e) -> (e.getCode().equals(code)))
-                .findAny()
-                .orElse(null);
-    }
-    // 省略更多方法...
-}
-```
-
-使用EasyEnum后，将枚举实现`Dict`接口，代码将简化成如下。
-#### After：
+而使用EasyEnum后，将枚举实现`Dict`接口，代码将简化成如下。
 ```java
 /**
  * 性别枚举示例
