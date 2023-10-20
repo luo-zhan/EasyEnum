@@ -8,6 +8,7 @@
 
 ## 功能
 - [x] 简化枚举类定义（省略属性定义&get方法，提供大量实用的枚举转换工具）
+- [x] Json序列化、反序列支持（Redis/MQ等需要json序列化的场景）
 - [x] Spring开发支持（支持Post请求DTO/VO中使用枚举属性、支持Get请求方法出入参使用枚举、Feign调用支持枚举传输）
 - [x] MyBatis开发支持（Entity中可直接用枚举属性在sql中自动转换成数值、MyBatisPlus中Wrapper支持直接使用枚举条件）
 - [ ] Dubbo调用中使用枚举传输
