@@ -235,24 +235,26 @@ wrapper.eq(Student::sex, Sex.MALE.getCode());
 wrapper.eq(Student::sex, Sex.MALE);
 // 注意：这里的代码简化不是必须要求Student类中的sex属性类型是枚举，定义为Integer同样有效
 ```
-> 源码参考：[DictMybatisConfiguration.java](easy-enum-for-spring%2Fsrc%2Fmain%2Fjava%2Fcom%2Frobot%2Fdict%2Fspring%2FDictMybatisConfiguration.java)
-## 依赖
+> 源码参考：DictMybatisConfiguration
+## 使用方式
+导入依赖即自动生效（项目中必须已经依赖SpringBoot，但没有使用Mybatis不会有影响）
    ```xml
-    <!-- 核心模块 -->
-    <dependency>
-       <groupId>io.github.luo-zhan</groupId>
-       <artifactId>easy-enum</artifactId>
-       <version>1.2.0-RELEASE</version>
-    </dependency>
-
-    <!-- spring开发支持（Json、Mybatis、Converter），引入这个不需要再引入上面核心模块 -->
+    <!-- Spring开发支持（含核心功能、Json、Mybatis、SpringConverter） -->
     <dependency>
         <groupId>io.github.luo-zhan</groupId>
         <artifactId>easy-enum-for-spring</artifactId>
         <version>1.2.0-RELEASE</version>
     </dependency>
    ```
-
+如果你不需要Spring和Mybatis的支持，只需要Dict枚举的工具方法，可以只引入以下依赖
+```xml
+<!-- 核心模块 -->
+<dependency>
+   <groupId>io.github.luo-zhan</groupId>
+   <artifactId>easy-enum</artifactId>
+   <version>1.2.0-RELEASE</version>
+</dependency>
+```
 ## 交流
 
 有任何问题或建议，欢迎提issues或者来讨论组内畅所欲言
