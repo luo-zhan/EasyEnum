@@ -55,6 +55,13 @@ class DictTest {
     }
 
     @Test
+    void getAllExcludeDeprecated() {
+        List<DictBean> all = Dict.getAll(Sex.class,true);
+        System.out.println(JSON.toJSONString(all));
+        assertEquals(2, all.size());
+    }
+
+    @Test
     void getItems() {
         List<DictBean> items = Dict.getItems(Sex.MALE, Sex.FEMALE);
         System.out.println(JSON.toJSONString(items));

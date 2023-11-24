@@ -17,9 +17,10 @@ public class DictBean implements Dict<Object> {
     private final String text;
     /**
      * 是否过期
-     * 一般来说，过期的字典项不能用于新增，而查询时需要作文本翻译
+     * <p>在枚举选项上使用@Deprecated注解标志过期
+     * <p>该属性不会被序列化
      */
-    private final boolean isDeprecated;
+    private final transient boolean isDeprecated;
 
     public DictBean(Object code, String text) {
         this.code = code;

@@ -95,9 +95,20 @@ public interface Dict<T> {
      * @return List
      */
     static <T> List<DictBean> getAll(Class<? extends Dict<T>> clazz) {
-        return DictPool.getAll(clazz);
+        return getAll(clazz, false);
     }
 
+    /**
+     * 获取所有字典枚举项（常用下拉框数据请求）
+     * 可以选择是否包含废弃枚举项
+     *
+     * @param clazz               字典枚举类
+     * @param isExcludeDeprecated 是否排除废弃选项，枚举项上使用@Deprecated注解标识废弃
+     * @return List
+     */
+    static <T> List<DictBean> getAll(Class<? extends Dict<T>> clazz, boolean isExcludeDeprecated) {
+        return DictPool.getAll(clazz, true);
+    }
 
     /**
      * 获取给定的字典枚举项（常用下拉框数据请求）
@@ -121,7 +132,7 @@ public interface Dict<T> {
     @SuppressWarnings("unchecked")
     static <E extends Dict<?>> List<DictBean> getItemsExclude(E... excludeEnums) {
         Class<? extends Dict<?>> enmuClass = (Class<? extends Dict<?>>) excludeEnums.getClass().getComponentType();
-        List<DictBean> allDict = DictPool.getAll(enmuClass);
+        List<DictBean> allDict = DictPool.getAll(enmuClass, false);
         List<?> excluceCodeList = Stream.of(excludeEnums).map(Dict::getCode).collect(Collectors.toList());
         return allDict.stream()
                 .filter(dictBean -> !excluceCodeList.contains(dictBean.getCode()))

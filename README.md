@@ -24,12 +24,12 @@
 /**
  * 性别枚举示例
  */
-public enum Sex implements Dict<Integer> {
+public enum SexEnum implements Dict<Integer> {
     MALE(1, "男"),
     FEMALE(2, "女"),
     UNKNOWN(3, "未知");
 
-    Sex(Integer code, String text) {
+    SexEnum(Integer code, String text) {
         // 一个init方法搞定，该方法来自Dict接口
         init(code, text);
     }
@@ -37,8 +37,8 @@ public enum Sex implements Dict<Integer> {
 ```
 你没看错，原先的属性定义、get方法、工具方法全部省略，仅仅只需要在构造方法中调用`init()`方法即可。接着就能通过`getCode()`和`getText()`方法获取枚举的编码值和文本。
 ```java
-Integer code = Sex.MALE.getCode(); // 1
-String text = Sex.MALE.getText(); // "男"
+Integer code = SexEnum.MALE.getCode(); // 1
+String text = SexEnum.MALE.getText(); // "男"
 ```
 
 > Dict的含义即为字典，拥有编码和文本两个固定属性，而在业务开发中定义的枚举大都是就是字典，所以抽象成接口，省略枚举类中重复代码。
@@ -47,22 +47,22 @@ String text = Sex.MALE.getText(); // "男"
 Dict接口除了优化枚举申明，还提供了大量实用的api：
 ```java
 // 1、通过code获取text
-String text = Dict.getTextByCode(Sex.class, 1); // "男"
+String text = Dict.getTextByCode(SexEnum.class, 1); // "男"
 // 2、通过text获取code
-Integer code = Dict.getCodeByText(Sex.class, "男"); // 1
+Integer code = Dict.getCodeByText(SexEnum.class, "男"); // 1
 // 3、通过code获取枚举
-Sex sex = Dict.getByCode(Sex.class, 1); // Sex.MALE
+SexEnum sex = Dict.getByCode(SexEnum.class, 1); // SexEnum.MALE
 ```
 转换成字典项集合，常用于给前端下拉框展示使用
 ```java
 // 4、获取枚举的所有元素
-List<DictBean> all = Dict.getAll(Sex.class); // [{code:1,text:"男"},{code:2,text:"女"},{code:3,text:"未知"}]
+List<DictBean> all = Dict.getAll(SexEnum.class); // [{code:1,text:"男"},{code:2,text:"女"},{code:3,text:"未知"}]
 // 5、获取枚举的指定元素
-List<DictBean> items = Dict.getItems(Sex.MALE, Sex.FEMALE); // [{code:1,text:"男"},{code:2,text:"女"}]
+List<DictBean> items = Dict.getItems(SexEnum.MALE, SexEnum.FEMALE); // [{code:1,text:"男"},{code:2,text:"女"}]
 // 6、排除指定元素，获取其他元素
-List<DictBean> items = Dict.getItemsExclude(Sex.UNKNOWN); // [{code:1,text:"男"},{code:2,text:"女"}]
+List<DictBean> items = Dict.getItemsExclude(SexEnum.UNKNOWN); // [{code:1,text:"男"},{code:2,text:"女"}]
 ```
-上例中的DictBean是Dict的一个实现类，用于存储和展示真实的枚举数据，DictBean申明如下：
+上例中的DictBean是Dict的一个实现类，用于存储真正的枚举数据，DictBean定义如下：
 ```java
 public class DictBean implements Dict<Object> {
     /**
@@ -74,38 +74,39 @@ public class DictBean implements Dict<Object> {
      */
     private final String text;
     /**
-     * 是否过期
-     * 一般来说，过期的字典项不能用于新增，而查询时需要作文本翻译
+     * 是否废弃
      */
-    private final boolean isDeprecated;
+    private final transient boolean isDeprecated;
     
 }
 ```
-其中`isDeprecated`属性的作用是如果我们在枚举项上使用`@Deprecated`注解时，这个属性的值就会为true
+其中`isDeprecated`属性的作用是如果我们在枚举项上使用`@Deprecated`注解时，这个属性的值就会为true。
+
+示例：
 ```java
-public enum Sex implements Dict<Integer> {
+public enum SexEnum implements Dict<Integer> {
     MALE(1, "男"),
     FEMALE(2, "女"),
     @Deprecated
     UNKNOWN(3, "未知");
     ...
 }
-// UNKOWN对应的数据体中isDeprecated为true
-List<DictBean> all = Dict.getAll(Sex.class); // [{code:1,text:"男"},{code:2,text:"女"},{code:3,text:"未知",isDeprecated:true}]
+
+// 使用getAll()的重载方法，第二个入参表示是否排除废弃枚举项
+List<DictBean> all = Dict.getAll(SexEnum.class, true); // [{code:1,text:"男"},{code:2,text:"女"}]
 ```
 
-有了这些工具方法，枚举类中再也不用写重复的方法代码了。
 
 ### 3.Spring开发支持
 #### 3.1 Post请求DTO/VO中使用枚举属性
-在以往的接口开发中，是不是当DTO中有枚举含义的字段时，都是用int类型来处理，然后代码中写逻辑时需要这样：
+在以往的接口开发中，当DTO中有枚举含义的字段时，常常是用Integer类型来定义，然后代码中写逻辑时需要这样：
 ```java
 // 实际上这段代码还会告警，提示应使用equals
 if(student.getSex() == SexEnum.MALE.getCode()){
     ...
 }
 ```
-又比如当遇到switch-case时，代码也会相当不优雅：
+又比如当遇到switch-case时，代码也稍显麻烦：
 ```java
 // 写法1，直接用魔法值
 switch(studentDTO.getSex()){
@@ -128,26 +129,26 @@ public class StudentDTO {
     
 }
 
-// 代码中：
+// 写switch-case很顺畅
 switch(studentDTO.getSex()){
     case MALE:  System.out.print("男");break;
     case FEMAL: System.out.print("女");break;
 }
 ```
-> 这里DTO、VO都支持使用枚举属性，因为对枚举的json序列化和反序列化做了支持
+> 这里DTO、VO都支持直接用枚举类型的属性，因为组件对Dict枚举的json序列化和反序列化做了支持
 > 
 > 源码参考：DictJacksonConfiguration
 #### 3.2 支持Get请求方法出入参使用枚举
-接口参数除了Json序列化方式，也有可能是Get请求参数方式，也做了支持
+接口参数除了Json序列化方式，也有可能是Get请求参数方式，组件同样也做了支持
 ```java
 @GetMapping("/listStudentBySex")
-public List<Student> listStudent(Sex sex){
+public List<Student> listStudent(SexEnum sex){
     ...   
 }
 ```
 > 这里无论是入参还是出参都可以使用枚举，因为对枚举对Spring的converter做了支持
 > 
-> 源码参考：DictSpringConvertConfiguration
+> 源码参考：DictSpringConvertConfintion
 
 #### 3.3 Feign调用支持枚举参数传输
 Feign调用时，方法参数会先在调用方序列化成url请求参数进行传输，到达被调用方后再反序列化成方法入参，这里也对枚举做了支持
@@ -159,14 +160,14 @@ Feign调用时，方法参数会先在调用方序列化成url请求参数进行
 public interface StudentFeignClient {
 
     @GetMapping("/listStudentBySex")
-    List<Student> listStudent(Sex sex); //直接使用枚举入参
+    List<Student> listStudent(SexEnum sex); //直接使用枚举入参
 }
 
 // 调用方：
 @Resource
 private StudentFeignClient studentFeignClient;
 ...
-List<Student> studentList = studentFeignClient.listStudent(Sex.MALE);
+List<Student> studentList = studentFeignClient.listStudent(SexEnum.MALE);
 ```
 > 源码参考：DictSpringConvertConfiguration
 
@@ -185,10 +186,10 @@ public class Student{
 ```java
 Wrapper<Student> wrapper = new LambdaQueryWrapper<>(); // QueryWrapper同理
 // 之前
-wrapper.eq(Student::sex, Sex.MALE.getCode());
+wrapper.eq(Student::sex, SexEnum.MALE.getCode());
 // 之后
-wrapper.eq(Student::sex, Sex.MALE);
-// 注意：这里的代码简化不是必须要求Student类中的sex属性类型是枚举，定义为Integer同样有效
+wrapper.eq(Student::sex, SexEnum.MALE);
+// 注意：这里的代码简化不要求Student类中的sex属性类型必须是枚举，Integer类型同样有效
 ```
 > 源码参考：DictMybatisConfiguration
 ## 使用方式

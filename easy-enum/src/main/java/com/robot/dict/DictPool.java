@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * 字典池，所有Dict的实现类都会在这里注册
@@ -45,13 +46,19 @@ class DictPool {
         return DICT_MAP.get(dict);
     }
 
+
     /**
-     * 根据class获取字典集合
+     * 根据class获取字典集合，可以选择是否排除过期选项
+     * 枚举上使用@Deprecated注解标识过期选项
      */
-    static List<DictBean> getAll(Class<? extends Dict<?>> clazz) {
+    static List<DictBean> getAll(Class<? extends Dict<?>> clazz, boolean isExcludeDeprecated) {
         // 触发实例化枚举对象，避免并发问题导致未实例化拿不到数据，这比任何加锁方式都要简单快速
         clazz.getEnumConstants();
-        return DICT_CLASS_ITEMS_MAP.get(clazz);
+        List<DictBean> dictBeans = DICT_CLASS_ITEMS_MAP.get(clazz);
+        if (isExcludeDeprecated) {
+            return dictBeans.stream().filter(dictBean -> !dictBean.getIsDeprecated()).collect(Collectors.toList());
+        }
+        return dictBeans;
     }
 
     private DictPool() {
