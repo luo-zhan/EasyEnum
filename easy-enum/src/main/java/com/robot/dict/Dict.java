@@ -107,7 +107,7 @@ public interface Dict<T> {
      * @return List
      */
     static <T> List<DictBean> getAll(Class<? extends Dict<T>> clazz, boolean isExcludeDeprecated) {
-        return DictPool.getAll(clazz, true);
+        return DictPool.getAll(clazz, isExcludeDeprecated);
     }
 
     /**
