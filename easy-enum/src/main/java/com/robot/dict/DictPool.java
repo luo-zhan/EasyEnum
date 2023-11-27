@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
  *
  * @author R
  */
-class DictPool {
+interface DictPool {
     /**
      * 存储所有字典
      */
-    private static final Map<Dict<?>, DictBean> DICT_MAP = new ConcurrentHashMap<>();
+    Map<Dict<?>, DictBean> DICT_MAP = new ConcurrentHashMap<>();
     /**
      * 枚举类和对应的字典集合
      */
-    private static final Map<Class<?>, List<DictBean>> DICT_CLASS_ITEMS_MAP = new ConcurrentHashMap<>();
+    Map<Class<?>, List<DictBean>> DICT_CLASS_ITEMS_MAP = new ConcurrentHashMap<>();
 
     /**
      * 放入字典和对应的code、text
@@ -29,9 +29,9 @@ class DictPool {
         Class<?> dictClass = dict.getClass();
         boolean isEnumDeprecated = false;
         try {
-            isEnumDeprecated = dictClass.isEnum() && dictClass.getDeclaredField(((Enum<?>) dict).name()).isAnnotationPresent(Deprecated.class);
-        } catch (NoSuchFieldException ignore) {
-            // impossible
+            isEnumDeprecated = dictClass.getDeclaredField(((Enum<?>) dict).name()).isAnnotationPresent(Deprecated.class);
+        } catch (ClassCastException | NoSuchFieldException e) {
+            throw new RuntimeException(dictClass + "不是枚举类", e);
         }
         DictBean dictBean = new DictBean(code, text, isEnumDeprecated);
         DICT_MAP.put(dict, dictBean);
@@ -61,6 +61,5 @@ class DictPool {
         return dictBeans;
     }
 
-    private DictPool() {
-    }
+
 }
