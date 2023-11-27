@@ -5,7 +5,7 @@
 
     <groupId>io.github.luo-zhan</groupId>
     <artifactId>EasyEnum</artifactId>
-    <version>1.2.0-RELEASE</version>
+    <version>1.3.0-RELEASE</version>
     <name>EasyEnum</name>
     <modules>
         <module>easy-enum</module>
@@ -17,6 +17,11 @@
     <description>枚举也能如此简单</description>
     <url>https://github.com/luo-zhan/EasyEnum</url>
 
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <developers>
         <developer>
@@ -134,8 +139,22 @@
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <version>4.3.0</version>
                         <configuration>
-                            <repoToken>TsQHHPW9P2wm6TNuqLteuICP0XgoglGeq</repoToken>
+                            <repoToken>7fUGIlSUFizP5JseL6EoBEVj4PEmRZEvp</repoToken>
                         </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.7.6.201602180812</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
                     </plugin>
                 </plugins>
             </build>

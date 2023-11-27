@@ -1,7 +1,7 @@
 # EasyEnum
-[![coverage](https://img.shields.io/badge/coverage-100%25-red)]()
-[![GitHub](https://img.shields.io/github/license/luo-zhan/EasyEnum)](http://opensource.org/licenses/apache-2-0)
+[![Coverage Status](https://coveralls.io/repos/github/luo-zhan/EasyEnum/badge.svg?branch=main)](https://coveralls.io/github/luo-zhan/EasyEnum?branch=main)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/luo-zhan/EasyEnum)]()
+[![GitHub](https://img.shields.io/github/license/luo-zhan/EasyEnum)](http://opensource.org/licenses/apache-2-0)
 [![GitHub last commit](https://img.shields.io/github/last-commit/luo-zhan/EasyEnum?label=Last%20commit)]()
 
 重铸枚举荣光！！
@@ -199,7 +199,7 @@ wrapper.eq(Student::sex, SexEnum.MALE);
     <dependency>
         <groupId>io.github.luo-zhan</groupId>
         <artifactId>easy-enum-for-spring</artifactId>
-        <version>1.2.0-RELEASE</version>
+        <version>1.3.0-RELEASE</version>
     </dependency>
    ```
 如果你不需要Spring和Mybatis的支持，只需要Dict枚举的工具方法，可以只引入以下依赖
@@ -208,7 +208,7 @@ wrapper.eq(Student::sex, SexEnum.MALE);
 <dependency>
    <groupId>io.github.luo-zhan</groupId>
    <artifactId>easy-enum</artifactId>
-   <version>1.2.0-RELEASE</version>
+   <version>1.3.0-RELEASE</version>
 </dependency>
 ```
 ## 交流
