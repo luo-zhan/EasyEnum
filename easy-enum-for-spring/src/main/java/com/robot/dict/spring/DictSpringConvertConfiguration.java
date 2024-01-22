@@ -3,6 +3,7 @@ package com.robot.dict.spring;
 
 import com.robot.dict.spring.converter.DictToStringConverter;
 import com.robot.dict.spring.converter.StringToDictConverterFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *
  * @author R
  */
+@ConditionalOnClass(WebMvcConfigurer.class)
 @Configuration
 public class DictSpringConvertConfiguration implements WebMvcConfigurer {
 
