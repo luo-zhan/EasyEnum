@@ -193,13 +193,13 @@ wrapper.eq(Student::sex, SexEnum.MALE);
 ```
 > 源码参考：DictMybatisConfiguration
 ## 使用方式
-导入依赖即自动生效（项目中必须已经依赖SpringBoot，但没有使用Mybatis不会有影响）
+导入依赖即自动生效
    ```xml
-    <!-- Spring开发支持（含核心功能、Json、Mybatis、SpringConverter） -->
+    <!-- Spring开发支持，含核心功能、Json、SpringConverter（项目须依赖springWeb）和Mybatis（项目须依赖mybatis）） -->
     <dependency>
         <groupId>io.github.luo-zhan</groupId>
         <artifactId>easy-enum-for-spring</artifactId>
-        <version>1.3.0-RELEASE</version>
+        <version>1.3.1-RELEASE</version>
     </dependency>
    ```
 如果你不需要Spring和Mybatis的支持，只需要Dict枚举的工具方法，可以只引入以下依赖
@@ -208,7 +208,7 @@ wrapper.eq(Student::sex, SexEnum.MALE);
 <dependency>
    <groupId>io.github.luo-zhan</groupId>
    <artifactId>easy-enum</artifactId>
-   <version>1.3.0-RELEASE</version>
+   <version>1.3.1-RELEASE</version>
 </dependency>
 ```
 ## 交流

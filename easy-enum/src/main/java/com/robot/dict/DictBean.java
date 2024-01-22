@@ -6,7 +6,7 @@ package com.robot.dict;
  *
  * @author R
  */
-public class DictBean implements Dict<Object> {
+public class DictBean {
     /**
      * 字典code
      */
@@ -34,17 +34,17 @@ public class DictBean implements Dict<Object> {
         this.isDeprecated = isDeprecated;
     }
 
-    @Override
+
     public Object getCode() {
         return code;
     }
 
-    @Override
+
     public String getText() {
         return text;
     }
 
-    public boolean getIsDeprecated() {
+    public boolean isDeprecated() {
         return isDeprecated;
     }
 

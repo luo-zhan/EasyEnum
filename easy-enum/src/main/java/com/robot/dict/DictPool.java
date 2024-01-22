@@ -56,7 +56,7 @@ interface DictPool {
         clazz.getEnumConstants();
         List<DictBean> dictBeans = DICT_CLASS_ITEMS_MAP.get(clazz);
         if (isExcludeDeprecated) {
-            return dictBeans.stream().filter(dictBean -> !dictBean.getIsDeprecated()).collect(Collectors.toList());
+            return dictBeans.stream().filter(dictBean -> !dictBean.isDeprecated()).collect(Collectors.toList());
         }
         return dictBeans;
     }
