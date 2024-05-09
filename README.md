@@ -11,7 +11,7 @@
 - [x] Json序列化、反序列支持（Redis/MQ等需要json序列化的场景）
 - [x] Spring开发支持（支持Post请求DTO/VO中使用枚举属性、支持Get请求方法出入参使用枚举、Feign调用支持枚举传输）
 - [x] MyBatis开发支持（Entity中可直接用枚举属性在sql中自动转换成数值、MyBatisPlus中Wrapper支持直接使用枚举条件）
-- [ ] Dubbo调用中使用枚举传输
+- [x] Dubbo传参支持（json协议完美支持，Hessian协议不推荐使用枚举传输）
 
 ## 快速上手
 
