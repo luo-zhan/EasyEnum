@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+/**
+ * @author robot.luo
+ */
 @Slf4j
 @RestController
 public class Controller implements TestFeignClient {
@@ -18,24 +21,28 @@ public class Controller implements TestFeignClient {
     @Resource
     private TestFeignClient testFeignClient;
 
-    @GetMapping("/json/serialize")
+    @GetMapping("/getTeacher")
     public Teacher getTeacher() {
         // 观察接口响应中的sex属性值
         return new Teacher(1, "张三", Sex.MALE, "长沙");
     }
 
-    @PostMapping("/json/deserialize")
-    public String addTeacher(@RequestBody Teacher teacher) {
-        return "json反序列化性别枚举，结果：" + teacher.getSex().getText();
+    @PostMapping("/addTeacher")
+    public Teacher addTeacher(@RequestBody Teacher teacher) {
+        log.info("json反序列化性别枚举，结果：{}", teacher.getSex().getText());
+        return teacher;
     }
 
-    @GetMapping("/deserialize")
-    public String listTeacher(Sex sex) {
-        return "枚举可以直接作为接口参数，结果：" + sex.getText();
+    @GetMapping("/findOneTeacherBySex")
+    public Teacher listTeacherBySex(Sex sex) {
+        log.info("枚举可以直接作为接口参数，入参{}", sex.getText());
+        Teacher teacher = new Teacher();
+        teacher.setSex(sex);
+        return teacher;
     }
 
-    @GetMapping("/serialize")
-    public Sex listTeacher() {
+    @GetMapping("/getSex")
+    public Sex getSex() {
         // 观察接口响应
         return Sex.MALE;
     }
@@ -48,6 +55,7 @@ public class Controller implements TestFeignClient {
 
     @Override
     public Sex feignFunction(Sex sex) {
-        return sex;
+        log.info("feign调用后，转换性别{}", sex);
+        return sex == Sex.MALE ? Sex.FEMALE : Sex.MALE;
     }
 }

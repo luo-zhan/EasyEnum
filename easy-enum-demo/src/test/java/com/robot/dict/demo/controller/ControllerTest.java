@@ -1,81 +1,76 @@
 package com.robot.dict.demo.controller;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.robot.dict.demo.Application;
 import com.robot.dict.demo.bean.Teacher;
 import com.robot.dict.demo.enums.Sex;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+
+import javax.annotation.Resource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = Application.class)
-@AutoConfigureMockMvc
 @Slf4j
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ControllerTest {
-    @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private ObjectMapper objectMapper;
 
+    @Resource
+    private Controller controller;
+    @Resource
+    private TestRestTemplate restTemplate;
+
+
+    /**
+     * 测试json序列化枚举（接口返回参数是DTO，且DTO中使用了枚举属性）
+     */
     @Test
-    void getTeacher() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/json/serialize");
-        String result = request(request);
-        assertEquals("{\"id\":1,\"name\":\"张三\",\"sex\":1,\"address\":\"长沙\"}", result);
+    void test_serialize_by_json() {
+        Teacher response = restTemplate.getForObject("/getTeacher", Teacher.class);
+        log.info(response.toString());
+        assertEquals(response.getSex(), Sex.MALE);
     }
 
+    /**
+     * 测试json反序列化枚举（接口入参是DTO，且DTO中使用了枚举属性）
+     */
     @Test
-    void addTeacher() throws Exception {
+    void test_deserialize_by_json() {
         Teacher teacher = new Teacher();
         teacher.setSex(Sex.MALE);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/json/deserialize")
-                .content(objectMapper.writeValueAsString(teacher))
-                .contentType(MediaType.APPLICATION_JSON);
-        String result = request(request);
-        assertEquals("json反序列化性别枚举，结果：男", result);
-
+        Teacher response = restTemplate.postForObject("/addTeacher", teacher, Teacher.class);
+        log.info(response.toString());
+        assertEquals(response, teacher);
     }
 
+    /**
+     * 测试spring-converter反序列化枚举（接口入参使用枚举）
+     */
     @Test
-    void listTeacher() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/deserialize").queryParam("sex", "1");
-        String result = request(request);
-        assertEquals("枚举可以直接作为接口参数，结果：男", result);
+    void test_deserialize_by_spring_converter() {
+        Teacher response = restTemplate.getForObject("/findOneTeacherBySex?sex=1", Teacher.class);
+        log.info(response.toString());
+        assertEquals(response.getSex(), Sex.MALE);
     }
 
+    /**
+     * 测试spring-converter序列化枚举（接口出参使用枚举）
+     */
     @Test
-    void testListTeacher() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/serialize");
-        String result = request(request);
-        assertEquals("1", result);
+    void test_serialize_by_spring_converter() {
+        String response = restTemplate.getForObject("/getSex", String.class);
+        assertEquals("1", response);
     }
 
+    /**
+     * 测试feign调用时序列化枚举（接口入参使用枚举）
+     */
     @Test
-    void testFeignClient() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/testFeign").queryParam("sex", "1");
-        String result = request(request);
-        assertEquals("1", result);
-    }
-
-    private String request(MockHttpServletRequestBuilder mockMvcRequestBuilder) throws Exception {
-        MockHttpServletResponse response = mvc.perform(mockMvcRequestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse();
-        response.setCharacterEncoding("utf-8");
-        String result = response.getContentAsString();
-        log.info(result);
-        return result;
+    void test_feign() {
+        Sex sex = controller.testFeign(Sex.MALE);
+        assertEquals(sex, Sex.FEMALE);
     }
 }

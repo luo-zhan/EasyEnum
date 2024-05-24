@@ -20,7 +20,7 @@ public class DictDeserializer extends JsonDeserializer<Dict> implements Contextu
     @Override
     public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) {
         // 根据上下文创建不同Dict实现类的反序列化器
-        return new DictDeserializer((Class) property.getType().getRawClass());
+        return this;
     }
 
     @Override
